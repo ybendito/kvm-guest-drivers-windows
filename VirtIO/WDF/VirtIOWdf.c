@@ -78,6 +78,11 @@ NTSTATUS VirtIOWdfInitialize(PVIRTIO_WDF_DRIVER pWdfDriver,
     /* set max transfer size to 256M, should be enough for any purpose */
     /* number of SG fragments is unlimited */
     WDF_DMA_ENABLER_CONFIG_INIT(&dmaEnablerConfig, WdfDmaProfileScatterGather64Duplex, 0xFFFFFFF);
+#if USE_DMA_V3
+    dmaEnablerConfig.WdmDmaVersionOverride = 3;
+    // TODO: check in future whether this is better to set this flag
+    // dmaEnablerConfig.Flags = WDF_DMA_ENABLER_CONFIG_NO_SGLIST_PREALLOCATION;
+#endif
     status = WdfDmaEnablerCreate(Device, &dmaEnablerConfig, WDF_NO_OBJECT_ATTRIBUTES, &pWdfDriver->DmaEnabler);
     if (NT_SUCCESS(status)) {
         WDF_OBJECT_ATTRIBUTES_INIT(&attributes);

@@ -61,6 +61,18 @@
       <Configuration>Win10 Release</Configuration>
       <Platform>ARM64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="WinNext Release|Win32">
+      <Configuration>WinNext Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WinNext Release|x64">
+      <Configuration>WinNext Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WinNext Release|ARM64">
+      <Configuration>WinNext Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dma.c" />
@@ -104,6 +116,13 @@
     <TargetVersion>Windows8</TargetVersion>
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <KMDF_VERSION_MINOR>11</KMDF_VERSION_MINOR>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)'=='WinNext Release'">
+    <TargetVersion>
+    </TargetVersion>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <_NT_TARGET_VERSION>0xA000008</_NT_TARGET_VERSION>
+    <KMDF_VERSION_MINOR>23</KMDF_VERSION_MINOR>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Win10 Release|Win32'">
     <TargetVersion>Windows10</TargetVersion>
@@ -240,13 +259,17 @@
     <OutDir>objfre_wxp_amd64\amd64\</OutDir>
     <IntDir>objfre_wxp_amd64\amd64\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='WinNext Release'">
+    <OutDir>objfre_winnext\$(TargetArch)\</OutDir>
+    <IntDir>objfre_winnext\$(TargetArch)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalOptions>/kernel %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">POOL_NX_OPTIN_AUTO=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">POOL_NX_OPTIN_AUTO=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN_AUTO=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='WinNext Release'">USE_DMA_V3=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
