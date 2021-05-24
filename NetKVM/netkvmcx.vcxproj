@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="WinNext Release|Win32">
+      <Configuration>WinNext Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WinNext Release|x64">
+      <Configuration>WinNext Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WinNext Release|ARM64">
+      <Configuration>WinNext Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}</ProjectGuid>
+    <TemplateGuid>{1bc93793-694f-48fe-9372-81e2b05556fd}</TemplateGuid>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <TargetVersion>
+    </TargetVersion>
+    <Platform Condition="'$(Platform)' == ''">Win32</Platform>
+    <RootNamespace>netkvmcx</RootNamespace>
+    <ConfigurationType>Driver</ConfigurationType>
+    <DriverType>KMDF</DriverType>
+    <NetAdapterDriver>true</NetAdapterDriver>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <SourceInfFile>netkvmcx.inx</SourceInfFile>
+    <TargetInfFile>netkvmcx.inf</TargetInfFile>
+    <_NT_TARGET_VERSION>0xA000008</_NT_TARGET_VERSION>
+    <KMDF_VERSION_MINOR>23</KMDF_VERSION_MINOR>
+    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
+  </PropertyGroup>
+  <Import Project="$(MSBuildProjectDirectory)\netkvmcx.props" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Tools\Driver.Common.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(ConfigurationName)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(ConfigurationName)\</IntDir>
+    <DEP_LIB_PATH_WDF>wdf\objfre_winnext\$(TargetArch)</DEP_LIB_PATH_WDF>
+    <CodeAnalysisRuleSet>$(WindowsSdkDir)\CodeAnalysis\DriverRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <InstallRoot>$(ProjectDir)Install</InstallRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='Win32'" Label="Configuration">
+    <DEP_LIB_PATH>objfre_win10_x86\i386</DEP_LIB_PATH>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'" Label="Configuration">
+    <DEP_LIB_PATH>objfre_win10_amd64\amd64</DEP_LIB_PATH>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='ARM64'" Label="Configuration">
+    <DEP_LIB_PATH>objfre_win10_arm64\arm64</DEP_LIB_PATH>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>netkvmcx;..\Virtio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);PARANDIS_MAJOR_DRIVER_VERSION=$(_BUILD_MAJOR_VERSION_);PARANDIS_MINOR_DRIVER_VERSION=$(_BUILD_MINOR_VERSION_);_NT_TARGET_VERSION=$(_NT_TARGET_VERSION);DRIVER_NT_TARGET_VERSION=$(_NT_TARGET_MAJ)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4201;4214;4115;4127;4302;4463;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <WppEnabled>true</WppEnabled>
+      <WppScanConfigurationData>Common\Trace.h</WppScanConfigurationData>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>netkvmcx;Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);PARANDIS_MAJOR_DRIVER_VERSION=$(_BUILD_MAJOR_VERSION_);PARANDIS_MINOR_DRIVER_VERSION=$(_BUILD_MINOR_VERSION_);_NT_TARGET_VERSION=$(_NT_TARGET_VERSION);_RHEL_RELEASE_VERSION_=$(_RHEL_RELEASE_VERSION_);DRIVER_NT_TARGET_VERSION=$(_NT_TARGET_MAJ)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);..\VirtIO\$(DEP_LIB_PATH_WDF)\virtiolib_wdf.lib;..\VirtIO\$(DEP_LIB_PATH)\virtiolib.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+		xcopy /y /q $(OutDir)netkvmcx.inf $(InstallRoot)\NetCx\$(TargetArch)\
+        xcopy /y /q $(OutDir)netkvmcx.pdb $(InstallRoot)\NetCx\$(TargetArch)\
+        xcopy /y /q $(OutDir)$(ProjectName)\netkvmcx.cat $(InstallRoot)\NetCx\$(TargetArch)\
+        xcopy /y /q $(OutDir)$(ProjectName)\netkvmcx.sys $(InstallRoot)\NetCx\$(TargetArch)\
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <FilesToPackage Include="$(TargetPath)">
+      <PackageRelativeDirectory>
+      </PackageRelativeDirectory>
+    </FilesToPackage>
+    <FilesToPackage Include="@(Inf->'%(CopyOutput)')" Condition="'@(Inf)'!=''" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="netkvmcx\Parandis6.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Inf Include="$(SourceInfFile)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="netkvmcx\netkvmcx.h" />
+    <ClInclude Include="netkvmcx\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="netkvmcx\NetKvmCx_Adapter.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_Debug.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_Driver.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="netkvm-cx-base.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Tools\Driver.Common.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
