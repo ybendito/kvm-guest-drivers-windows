@@ -4,6 +4,7 @@ if /i "%~n1"=="netkvm_no_RSS" call :netkvm_no_RSS
 if /i "%~n1"=="netkvm_no_RSC" call :netkvm_no_RSC
 if /i "%~n1"=="netkvm_no_USO" call :netkvm_no_USO
 if /i "%~n1"=="netkvm" call :netkvm
+if /i "%~n1"=="netkvmcx" call :netkvmcx
 popd
 goto :eof
 :netkvm_no_RSS
@@ -21,6 +22,10 @@ goto :eof
 :netkvm
 copy /y netkvm-base.txt + netkvm-add-rss.txt + netkvm-add-rsc.txt + netkvm-add-uso.txt netkvm.inx.tmp > nul
 call :update netkvm.inx
+goto :eof
+:netkvmcx
+copy /y netkvm-cx-base.txt netkvmcx.inx.tmp > nul
+call :update netkvmcx.inx
 goto :eof
 :update
 fc /b %1 %1.tmp >nul 2>&1
