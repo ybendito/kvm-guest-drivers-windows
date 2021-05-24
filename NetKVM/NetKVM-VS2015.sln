@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProtocolService", "Protocol
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VirtioLib-WDF", "..\VirtIO\WDF\VirtioLib-WDF.vcxproj", "{EC1B7990-EA6A-45FE-836C-2F050F6BB632}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "netkvmcx", "netkvmcx.vcxproj", "{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Vista Release|ARM64 = Vista Release|ARM64
@@ -160,8 +162,11 @@ Global
 		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.Win8.1 Release|x86.Build.0 = Win8.1 Release|Win32
 		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.Win8.1 Release|x86.Deploy.0 = Win8.1 Release|Win32
 		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|ARM64.ActiveCfg = Win10 Release|ARM64
+		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|ARM64.Build.0 = Win10 Release|ARM64
 		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|x64.ActiveCfg = Win10 Release|x64
-		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|x86.ActiveCfg = WinXP Release|Win32
+		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|x64.Build.0 = Win10 Release|x64
+		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|x86.ActiveCfg = Win10 Release|Win32
+		{01D87C47-437A-4A16-8FD9-33FA5C99339E}.WinNext Release|x86.Build.0 = Win10 Release|Win32
 		{09672FE6-A18C-4B3B-B1DC-1C7C1F61F9B4}.Vista Release|ARM64.ActiveCfg = Header|x64
 		{09672FE6-A18C-4B3B-B1DC-1C7C1F61F9B4}.Vista Release|x64.ActiveCfg = Header|x64
 		{09672FE6-A18C-4B3B-B1DC-1C7C1F61F9B4}.Vista Release|x64.Build.0 = Header|x64
@@ -276,6 +281,29 @@ Global
 		{EC1B7990-EA6A-45FE-836C-2F050F6BB632}.WinNext Release|x64.Build.0 = WinNext Release|x64
 		{EC1B7990-EA6A-45FE-836C-2F050F6BB632}.WinNext Release|x86.ActiveCfg = WinNext Release|Win32
 		{EC1B7990-EA6A-45FE-836C-2F050F6BB632}.WinNext Release|x86.Build.0 = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Vista Release|ARM64.ActiveCfg = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Vista Release|x64.ActiveCfg = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Vista Release|x86.ActiveCfg = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win10 Release|ARM64.ActiveCfg = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win10 Release|x64.ActiveCfg = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win10 Release|x86.ActiveCfg = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win7 Release|ARM64.ActiveCfg = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win7 Release|x64.ActiveCfg = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win7 Release|x86.ActiveCfg = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win8 Release|ARM64.ActiveCfg = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win8 Release|x64.ActiveCfg = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win8 Release|x86.ActiveCfg = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win8.1 Release|ARM64.ActiveCfg = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win8.1 Release|x64.ActiveCfg = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.Win8.1 Release|x86.ActiveCfg = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|ARM64.ActiveCfg = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|ARM64.Build.0 = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|ARM64.Deploy.0 = WinNext Release|ARM64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|x64.ActiveCfg = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|x64.Build.0 = WinNext Release|x64
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|x86.ActiveCfg = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|x86.Build.0 = WinNext Release|Win32
+		{0EB2EA8A-CF40-4FB0-927E-8DABC436CEFF}.WinNext Release|x86.Deploy.0 = WinNext Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
