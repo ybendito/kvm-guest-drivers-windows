@@ -47,6 +47,9 @@
     <ClCompile Include="netkvmcx\NetKvmCx_Adapter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="netkvmcx\NetKvmCx_Reusable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="netkvm-cx-base.txt">

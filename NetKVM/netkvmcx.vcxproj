@@ -63,7 +63,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>netkvmcx;..\Virtio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>netkvmcx;..\Virtio;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);PARANDIS_MAJOR_DRIVER_VERSION=$(_BUILD_MAJOR_VERSION_);PARANDIS_MINOR_DRIVER_VERSION=$(_BUILD_MINOR_VERSION_);_NT_TARGET_VERSION=$(_NT_TARGET_VERSION);DRIVER_NT_TARGET_VERSION=$(_NT_TARGET_MAJ)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4201;4214;4115;4127;4302;4463;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <WppEnabled>true</WppEnabled>
@@ -106,6 +106,7 @@
     <ClCompile Include="netkvmcx\NetKvmCx_Adapter.cpp" />
     <ClCompile Include="netkvmcx\NetKvmCx_Debug.cpp" />
     <ClCompile Include="netkvmcx\NetKvmCx_Driver.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_Reusable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="netkvm-cx-base.txt" />

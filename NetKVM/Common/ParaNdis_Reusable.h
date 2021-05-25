@@ -1,5 +1,5 @@
 /*
- * This file collect standard includes for NetKVM CX driver,
+ * This file contains reusable prototypes for both NetCX and ParaNdis
  *
  * Copyright (c) 2021 Red Hat, Inc.
  *
@@ -29,18 +29,16 @@
 
 #pragma once
 
-#include <initguid.h>
-#include <ntddk.h>
-#include <wdf.h>
-#include <ntintsafe.h>
-#include <Ntstrsafe.h>
-#include <preview/netadaptercx.h>
-#include <preview/netadapter.h>
-#include <preview/netadapteroffload.h>
-#include <netiodef.h>
+#include "ethernetutils.h"
 
-#include <net/checksum.h>
-#include <net/logicaladdress.h>
-#include <net/lso.h>
-#include <net/virtualaddress.h>
-#include <wdmguid.h>
+void ParaNdis_DumpHostFeatures(ULONGLONG features);
+
+static BOOLEAN FORCEINLINE AckFeature(ULONGLONG HostFeatures, ULONGLONG& GuestFeatures, ULONG Feature)
+{
+    if (virtio_is_feature_enabled(HostFeatures, Feature))
+    {
+        virtio_feature_enable(GuestFeatures, Feature);
+        return TRUE;
+    }
+    return FALSE;
+}

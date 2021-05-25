@@ -33,7 +33,15 @@
 EXTERN_C {
 #include "../Common/Trace.h"
 #include "../VirtIO/WDF/VirtIOWdf.h"
+#include "../VirtIO/virtio_ring.h"
+#include "../VirtIO/virtio_pci.h"
+#include "../Common/virtio_net.h"
 }
+#include "../Common/ParaNdis_Reusable.h"
+
+#define PARANDIS_MULTICAST_LIST_SIZE        32
+#define PARANDIS_MAX_LSO_SIZE               0xF800
+#define PARANDIS_MIN_LSO_SEGMENTS           2
 
 class CAllocatable
 {
@@ -136,11 +144,44 @@ private:
     NETADAPTER m_NetAdapter;
     WDFDEVICE  m_WdfDevice;
     VIRTIO_WDF_DRIVER m_VirtIO = {};
+    ULONGLONG  m_HostFeatures = 0;
+    ULONGLONG  m_GuestFeatures = 0;
+    struct virtio_net_config m_DeviceConfig = {};
+    NET_ADAPTER_LINK_LAYER_ADDRESS m_CurrentMacAddress = {};
+    struct
+    {
+        ULONG fOverrideMac              : 1;
+        ULONG fHasChecksum              : 1;
+        ULONG fHasControlQueue          : 1;
+        ULONG fHasMacConfig             : 1;
+        ULONG fHasPromiscuous           : 1;
+        ULONG fHasExtPacketFilters      : 1;
+        ULONG fHasTSO4                  : 1;
+        ULONG fHasTSO6                  : 1;
+        ULONG fHasMQ                    : 1;
+        ULONG fRSSAllowed               : 1;
+        ULONG fHasRSS                   : 1;
+        ULONG fHasHash                  : 1;
+        ULONG fConnected                : 1;
+    } m_Flags = {};
 private:
+    NTSTATUS Initialize();
+    void ReadConfiguration();
+    void SetupGuestFeatures();
+    void SetCapabilities();
+    bool AckFeature(ULONG Feature)
+    {
+        return ::AckFeature(m_HostFeatures, m_GuestFeatures, Feature);
+    }
     void OnLastReferenceGone() override
     {
         delete this;
     }
+    void SetPacketFilter(NET_PACKET_FILTER_FLAGS PacketFilter);
+    void SetMulticastList(ULONG MulticastAddressCount, NET_ADAPTER_LINK_LAYER_ADDRESS* MulticastAddressList);
+    void SetChecksumOffload(NETOFFLOAD Offload);
+    void SetLsoOffload(NETOFFLOAD Offload);
+    void ReportLinkState(bool Unknown = false);
 };
 
 typedef struct _DevContext
