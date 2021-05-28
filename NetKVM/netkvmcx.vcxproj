@@ -32,7 +32,7 @@
     <SourceInfFile>netkvmcx.inx</SourceInfFile>
     <TargetInfFile>netkvmcx.inf</TargetInfFile>
     <_NT_TARGET_VERSION>0xA000008</_NT_TARGET_VERSION>
-    <KMDF_VERSION_MINOR>23</KMDF_VERSION_MINOR>
+    <KMDF_VERSION_MINOR>31</KMDF_VERSION_MINOR>
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
   </PropertyGroup>
@@ -60,6 +60,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='ARM64'" Label="Configuration">
     <DEP_LIB_PATH>objfre_win10_arm64\arm64</DEP_LIB_PATH>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <NetAdapterDriverPreview>true</NetAdapterDriverPreview>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

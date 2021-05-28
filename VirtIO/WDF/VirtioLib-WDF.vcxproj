@@ -122,7 +122,7 @@
     </TargetVersion>
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <_NT_TARGET_VERSION>0xA000008</_NT_TARGET_VERSION>
-    <KMDF_VERSION_MINOR>23</KMDF_VERSION_MINOR>
+    <KMDF_VERSION_MINOR>31</KMDF_VERSION_MINOR>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Win10 Release|Win32'">
     <TargetVersion>Windows10</TargetVersion>
