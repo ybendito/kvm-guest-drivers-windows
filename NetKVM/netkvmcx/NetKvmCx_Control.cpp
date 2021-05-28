@@ -1,5 +1,5 @@
 /*
- * Debug/trace support for NetKVM CX driver
+ * Net CX adapter: Control queue implementation
  *
  * Copyright (c) 2021 Red Hat, Inc.
  *
@@ -29,61 +29,16 @@
 
 #include "netkvmcx.h"
 #ifdef NETKVM_WPP_ENABLED
-#include "NetKvmCx_Debug.tmh"
+#include "NetKvmCx_Control.tmh"
 #endif
 
-int virtioDebugLevel = 0;
-int bDebugPrint = 1;
-
-#ifndef NETKVM_WPP_ENABLED
-
-#define PrintProcedure vDbgPrintEx
-
-static void NetKVMDebugPrint(const char* fmt, ...)
+CNetKvmControlQueue::~CNetKvmControlQueue()
 {
-    va_list list;
-    va_start(list, fmt);
-    PrintProcedure(DPFLTR_DEFAULT_ID, 9 | DPFLTR_MASK, fmt, list);
-#if defined(VIRTIO_DBG_USE_IOPORT)
-    {
-        NTSTATUS status;
-        // use this way of output only for DISPATCH_LEVEL,
-        // higher requires more protection
-        if (KeGetCurrentIrql() <= DISPATCH_LEVEL)
-        {
-            char buf[256];
-            size_t len, i;
-            buf[0] = 0;
-            status = RtlStringCbVPrintfA(buf, sizeof(buf), fmt, list);
-            if (status == STATUS_SUCCESS) len = strlen(buf);
-            else if (status == STATUS_BUFFER_OVERFLOW) len = sizeof(buf);
-            else { memcpy(buf, "Can't print", 11); len = 11; }
-            NdisAcquireSpinLock(&CrashLock);
-            for (i = 0; i < len; ++i)
-            {
-                NdisRawWritePortUchar(VIRTIO_DBG_USE_IOPORT, buf[i]);
-            }
-            NdisRawWritePortUchar(VIRTIO_DBG_USE_IOPORT, '\n');
-            NdisReleaseSpinLock(&CrashLock);
-        }
-    }
-#endif
-    va_end(list);
+
 }
 
-#else
-
-// TODO: unify with netkvm
-static void NetKVMDebugPrint(const char* fmt, ...)
+bool CNetKvmControlQueue::AllocateBlocks()
 {
-    va_list list;
-    va_start(list, fmt);
-    char buf[256];
-    buf[0] = 0;
-    _vsnprintf_s(buf, sizeof(buf), _TRUNCATE, fmt, list);
-    TraceNoPrefix(0, "%s", buf);
+    //VirtIOWdfDeviceAllocDmaMemory(&m_Adapter->m_VirtIO.VIODevice, PAGE_SIZE, 0);
+    return true;
 }
-
-#endif
-
-tDebugPrintFunc VirtioDebugPrintProc = NetKVMDebugPrint;

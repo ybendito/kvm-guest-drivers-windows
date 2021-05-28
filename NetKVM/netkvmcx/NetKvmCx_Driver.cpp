@@ -3,6 +3,11 @@
 #include "NetKvmCx_Driver.tmh"
 #endif
 
+#ifndef NETKVM_WPP_ENABLED
+#define WPP_INIT_TRACING(a,b)
+#define WPP_CLEANUP(a)
+#endif
+
 EXTERN_C DRIVER_INITIALIZE DriverEntry;
 EXTERN_C static EVT_WDF_DRIVER_DEVICE_ADD NetKVMCxEvtDeviceAdd;
 EXTERN_C static EVT_WDF_OBJECT_CONTEXT_CLEANUP NetKVMCxEvtDriverContextCleanup;
@@ -196,7 +201,7 @@ DriverEntry(
 VOID NetKVMCxEvtDriverContextCleanup(_In_ WDFOBJECT DriverObject)
 {
     PAGED_CODE();
-
+    UNREFERENCED_PARAMETER(DriverObject);
     TraceNoPrefix(0, "%s", __FUNCTION__);
     WPP_CLEANUP(WdfDriverWdmGetDriverObject((WDFDRIVER)DriverObject));
 }

@@ -28,6 +28,10 @@
     <Inf Include="$(SourceInfFile)" />
     <Inf Include="$(SourceInfFile)" />
     <Inf Include="$(SourceInfFile)" />
+    <Inf Include="$(SourceInfFile)" />
+    <Inf Include="$(SourceInfFile)" />
+    <Inf Include="$(SourceInfFile)" />
+    <Inf Include="$(SourceInfFile)" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="netkvmcx\stdafx.h">
@@ -48,6 +52,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="netkvmcx\NetKvmCx_Reusable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netkvmcx\NetKvmCx_TX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netkvmcx\NetKvmCx_RX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netkvmcx\NetKvmCx_VirtQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netkvmcx\NetKvmCx_Control.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

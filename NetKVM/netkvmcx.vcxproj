@@ -107,9 +107,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="netkvmcx\NetKvmCx_Adapter.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_Control.cpp" />
     <ClCompile Include="netkvmcx\NetKvmCx_Debug.cpp" />
     <ClCompile Include="netkvmcx\NetKvmCx_Driver.cpp" />
     <ClCompile Include="netkvmcx\NetKvmCx_Reusable.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_RX.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_TX.cpp" />
+    <ClCompile Include="netkvmcx\NetKvmCx_VirtQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="netkvm-cx-base.txt" />
