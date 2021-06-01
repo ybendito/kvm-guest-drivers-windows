@@ -116,7 +116,8 @@ CNetKvmAdapter::~CNetKvmAdapter()
 NTSTATUS CNetKvmAdapter::OnD0(WDF_POWER_DEVICE_STATE fromState)
 {
     NTSTATUS status = STATUS_SUCCESS;
-    TraceNoPrefix(0, "%s: from D%d", __FUNCTION__, fromState - WdfPowerDeviceD0);
+    TraceNoPrefix(0, "%s: from D%d\n", __FUNCTION__, fromState - WdfPowerDeviceD0);
+    virtio_device_ready(&m_VirtIO.VIODevice);
     ReportLinkState();
     return status;
 }
@@ -327,6 +328,11 @@ void CNetKvmAdapter::SetCapabilities()
 
 bool CNetKvmAdapter::SetupGuestFeatures()
 {
+    AckFeature(VIRTIO_RING_F_EVENT_IDX);
+    AckFeature(VIRTIO_RING_F_INDIRECT_DESC);
+    AckFeature(VIRTIO_F_ANY_LAYOUT);
+    AckFeature(VIRTIO_F_RING_PACKED);
+    AckFeature(VIRTIO_F_ACCESS_PLATFORM);
     AckFeature(VIRTIO_F_VERSION_1);
     AckFeature(VIRTIO_NET_F_STATUS);
     AckFeature(VIRTIO_NET_F_CTRL_VQ);
@@ -343,7 +349,7 @@ bool CNetKvmAdapter::SetupGuestFeatures()
     m_Flags.fHasMQ = AckFeature(VIRTIO_NET_F_MQ);
     m_VirtioHeaderSize = m_Flags.fHasHash ? sizeof(virtio_net_hdr_v1_hash) : sizeof(virtio_net_hdr_v1);
     m_NumActiveQueues = 1;
-    NTSTATUS status = virtio_set_features(&m_VirtIO.VIODevice, m_GuestFeatures);
+    NTSTATUS status = VirtIOWdfSetDriverFeatures(&m_VirtIO, m_GuestFeatures, 0);
     return NT_SUCCESS(status);
 }
 
@@ -392,7 +398,7 @@ NTSTATUS CNetKvmAdapter::Initialize()
         m_CurrentMacAddress.Length = sizeof(m_DeviceConfig.mac);
     }
 
-    if (NT_SUCCESS(status) && SetupGuestFeatures()) {
+    if (NT_SUCCESS(status) && !SetupGuestFeatures()) {
         errorMessage = "SetupGuestFeatures";
         status = STATUS_UNSUCCESSFUL;
     }
@@ -402,16 +408,18 @@ NTSTATUS CNetKvmAdapter::Initialize()
         status = STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    if (NT_SUCCESS(status) && m_ControlQueue.Prepare(m_DeviceConfig.max_virtqueue_pairs * 2)) {
+    if (NT_SUCCESS(status) && !m_ControlQueue.Prepare(m_DeviceConfig.max_virtqueue_pairs * 2)) {
         errorMessage = "ControlQueue";
         status = STATUS_INSUFFICIENT_RESOURCES;
     }
 
     if (NT_SUCCESS(status)) {
+        TraceNoPrefix(0, "%s: Setting capabilities\n", __FUNCTION__);
         SetCapabilities();
     }
 
     if (NT_SUCCESS(status)) {
+        TraceNoPrefix(0, "%s: Starting net adapter\n", __FUNCTION__);
         errorMessage = "NetAdapterStart";
         status = NetAdapterStart(m_NetAdapter);
     }
