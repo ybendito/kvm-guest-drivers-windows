@@ -247,6 +247,7 @@ void CNetKvmAdapter::SetCapabilities()
     NetAdapterSetPermanentLinkLayerAddress(m_NetAdapter, &u.permanentMac);
     NetAdapterSetCurrentLinkLayerAddress(m_NetAdapter, &m_CurrentMacAddress);
 
+#if MASK_TEMPORARY
     NET_ADAPTER_PACKET_FILTER_CAPABILITIES_INIT(
         &u.packetFilterCapabilities, all_filters,
         [](NETADAPTER Adapter, NET_PACKET_FILTER_FLAGS PacketFilter)
@@ -255,10 +256,11 @@ void CNetKvmAdapter::SetCapabilities()
             a->SetPacketFilter(PacketFilter);
         });
     NetAdapterSetPacketFilterCapabilities(m_NetAdapter, &u.packetFilterCapabilities);
-
+#endif
     m_DeviceConfig.mtu = 1500;
     NetAdapterSetLinkLayerMtuSize(m_NetAdapter, m_DeviceConfig.mtu);
 
+#if MASK_TEMPORARY
     NET_ADAPTER_MULTICAST_CAPABILITIES_INIT(
         &u.multicastCapabilities,
         PARANDIS_MULTICAST_LIST_SIZE,
@@ -268,7 +270,7 @@ void CNetKvmAdapter::SetCapabilities()
             a->SetMulticastList(MulticastAddressCount, MulticastAddressList);
         });
     NetAdapterSetMulticastCapabilities(m_NetAdapter, &u.multicastCapabilities);
-
+#endif
     //TODO: RSS capabilities
     //TODO: Power capabilities, if needed
 
@@ -284,6 +286,7 @@ void CNetKvmAdapter::SetCapabilities()
         });
     NetAdapterOffloadSetChecksumCapabilities(m_NetAdapter, &u.checksumOffloadCapabilities);
 
+#if MASK_TEMPORARY
     NET_ADAPTER_OFFLOAD_LSO_CAPABILITIES_INIT(
         &u.lsoOffloadCapabilities,
         m_Flags.fHasTSO4,
@@ -296,7 +299,9 @@ void CNetKvmAdapter::SetCapabilities()
             a->SetLsoOffload(Offload);
         });
     NetAdapterOffloadSetLsoCapabilities(m_NetAdapter, &u.lsoOffloadCapabilities);
+#endif
 
+#if MASK_TEMPORARY
     NET_ADAPTER_OFFLOAD_RSC_CAPABILITIES_INIT(
         &u.rscOffloadCapabilities,
         false,
@@ -307,7 +312,8 @@ void CNetKvmAdapter::SetCapabilities()
             CNetKvmAdapter* a = GetNetxKvmAdapter(Adapter);
             a->SetRscOffload(Offload);
         });
-
+    NetAdapterOffloadSetRscCapabilities(m_NetAdapter, &u.rscOffloadCapabilities);
+#endif
     NET_ADAPTER_TX_CAPABILITIES txCapabilities;
     NET_ADAPTER_DMA_CAPABILITIES dmaCapabilities;
 
