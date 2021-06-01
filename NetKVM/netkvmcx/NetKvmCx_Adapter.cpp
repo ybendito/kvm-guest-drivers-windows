@@ -49,10 +49,10 @@ BOOLEAN  CNetKvmAdapter::CheckInterrupts()
         }
         InterruptContext* ic = GetInterruptContext(m_Interrupts[i]);
         ic->messageId = info.MessageNumber;
-        TraceNoPrefix(0, "%s: message %d, vector %d", __FUNCTION__, info.MessageNumber, info.Vector);
+        TraceNoPrefix(0, "%s: message %d, vector %d\n", __FUNCTION__, info.MessageNumber, info.Vector);
     }
     if (nInterrupts < (2 * m_NumActiveQueues + 1)) {
-        TraceNoPrefix(0, "%s error: %d interrupts for %d active queues", __FUNCTION__, nInterrupts, m_NumActiveQueues);
+        TraceNoPrefix(0, "%s error: %d interrupts for %d active queues\n", __FUNCTION__, nInterrupts, m_NumActiveQueues);
         return false;
     }
     return true;
@@ -103,14 +103,14 @@ CNetKvmAdapter::CNetKvmAdapter(NETADAPTER NetAdapter, WDFDEVICE wdfDevice) :
             ic->adapter = this;
             ic->messageId = ULONG_MAX;
         } else {
-            TraceNoPrefix(0, "%s: error %X creating interrupt %d", __FUNCTION__, status, i);
+            TraceNoPrefix(0, "%s: error %X creating interrupt %d\n", __FUNCTION__, status, i);
         }
     }
 }
 
 CNetKvmAdapter::~CNetKvmAdapter()
 {
-    TraceNoPrefix(0, "%s", __FUNCTION__);
+    TraceNoPrefix(0, "%s\n", __FUNCTION__);
 }
 
 NTSTATUS CNetKvmAdapter::OnD0(WDF_POWER_DEVICE_STATE fromState)
@@ -125,7 +125,7 @@ NTSTATUS CNetKvmAdapter::OnD0(WDF_POWER_DEVICE_STATE fromState)
 NTSTATUS CNetKvmAdapter::OnDx(WDF_POWER_DEVICE_STATE toState)
 {
     NTSTATUS status = STATUS_SUCCESS;
-    TraceNoPrefix(0, "%s: to D%d", __FUNCTION__, toState - WdfPowerDeviceD0);
+    TraceNoPrefix(0, "%s: to D%d\n", __FUNCTION__, toState - WdfPowerDeviceD0);
     ReportLinkState(true);
     return status;
 }
@@ -136,7 +136,7 @@ ULONG CNetKvmAdapter::GetExpectedQueueSize(UINT index)
     ULONG RingSize, HeapSize;
     NTSTATUS status = virtio_query_queue_allocation(&m_VirtIO.VIODevice, index, &NumEntries, &RingSize, &HeapSize);
     if (NT_SUCCESS(status)) {
-        TraceNoPrefix(0, "%s: %d entries for Q%d", __FUNCTION__, NumEntries, index);
+        TraceNoPrefix(0, "%s: %d entries for Q%d\n", __FUNCTION__, NumEntries, index);
         return NumEntries;
     }
     return 0;
@@ -384,7 +384,7 @@ NTSTATUS CNetKvmAdapter::Initialize()
     if (!CheckMandatoryFeatures(m_HostFeatures)) {
         errorMessage = "CheckMandatoryFeatures";
         status = STATUS_NDIS_ADAPTER_NOT_READY;
-        TraceNoPrefix(0, "%s: failed at %s, error %X", __FUNCTION__, errorMessage, status);
+        TraceNoPrefix(0, "%s: failed at %s, error %X\n", __FUNCTION__, errorMessage, status);
         return status;
     }
 
@@ -430,7 +430,7 @@ NTSTATUS CNetKvmAdapter::Initialize()
         status = NetAdapterStart(m_NetAdapter);
     }
     if (!NT_SUCCESS(status)) {
-        TraceNoPrefix(0, "%s: failed at %s, error %X", __FUNCTION__, errorMessage, status);
+        TraceNoPrefix(0, "%s: failed at %s, error %X\n", __FUNCTION__, errorMessage, status);
     }
     return status;
 }
