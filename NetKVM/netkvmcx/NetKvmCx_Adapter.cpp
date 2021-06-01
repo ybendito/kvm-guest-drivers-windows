@@ -143,6 +143,7 @@ ULONG CNetKvmAdapter::GetExpectedQueueSize(UINT index)
 
 NTSTATUS CNetKvmAdapter::OnReleaseHardware()
 {
+    m_ControlQueue.Delete();
     VirtIOWdfShutdown(&m_VirtIO);
     return STATUS_SUCCESS;
 }

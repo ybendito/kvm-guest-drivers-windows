@@ -34,7 +34,7 @@
 
 CNetKvmRxQueue::~CNetKvmRxQueue()
 {
-    TraceNoPrefix(0, "%s #%d", __FUNCTION__, m_Id);
+    TraceNoPrefix(0, "%s #%d\n", __FUNCTION__, m_Id);
 }
 
 CNetKvmRxQueue::CNetKvmRxQueue(CNetKvmAdapter* Adapter, NETRXQUEUE_INIT* RxQueueInit) :
@@ -83,28 +83,28 @@ bool CNetKvmRxQueue::Prepare()
     m_LogicalAddressExtension.Init();
 
     done = true;
-    TraceNoPrefix(0, "%s #%d", __FUNCTION__, m_Id);
+    TraceNoPrefix(0, "%s #%d\n", __FUNCTION__, m_Id);
     return done;
 }
 
 void CNetKvmRxQueue::Advance()
 {
-    TraceNoPrefix(0, "%s #%d", __FUNCTION__, m_Id);
+    TraceNoPrefix(0, "%s #%d\n", __FUNCTION__, m_Id);
 }
 
 void CNetKvmRxQueue::Start()
 {
-    TraceNoPrefix(0, "%s", __FUNCTION__);
+    TraceNoPrefix(0, "%s #%d\n", __FUNCTION__, m_Id);
 }
 
 void CNetKvmRxQueue::Stop()
 {
-    TraceNoPrefix(0, "%s", __FUNCTION__);
+    TraceNoPrefix(0, "%s #%d\n", __FUNCTION__, m_Id);
 }
 
 void CNetKvmRxQueue::EnableNotification(bool Enable)
 {
-    TraceNoPrefix(0, "%s: %sable", __FUNCTION__, Enable ? "en" : "dis");
+    TraceNoPrefix(0, "%s: %sable\n", __FUNCTION__, Enable ? "en" : "dis");
 }
 
 bool CNetKvmRxQueue::AllocateBlocks()

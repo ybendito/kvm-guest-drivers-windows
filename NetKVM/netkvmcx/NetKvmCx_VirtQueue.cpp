@@ -32,12 +32,17 @@
 #include "NetKvmCx_VirtQueue.tmh"
 #endif
 
-CNetKvmVirtQueue::~CNetKvmVirtQueue()
+void CNetKvmVirtQueue::Delete()
 {
     if (m_VQ) {
         virtio_delete_queue(m_VQ);
         m_VQ = NULL;
     }
+}
+
+CNetKvmVirtQueue::~CNetKvmVirtQueue()
+{
+    Delete();
 }
 
 bool CNetKvmVirtQueue::InitQueue(UINT vqIndex)

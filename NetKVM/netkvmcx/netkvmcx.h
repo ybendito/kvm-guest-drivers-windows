@@ -130,6 +130,7 @@ class CNetKvmVirtQueue
 public:
     CNetKvmVirtQueue(CNetKvmAdapter* Adapter) : m_Adapter(Adapter) { }
     ~CNetKvmVirtQueue();
+    void Delete();
 protected:
     CNetKvmAdapter* m_Adapter;
     virtqueue* m_VQ = NULL;
