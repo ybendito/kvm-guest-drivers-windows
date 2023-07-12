@@ -798,6 +798,131 @@ public:
     }
 };
 
+class CFileWatcher
+{
+public:
+    CFileWatcher(LPCTSTR Directory, LPCTSTR Name, CEvent& Signal) :
+        m_Dir(Directory), m_Name(Name), m_Signal(Signal)
+    {
+        m_FullName = m_Dir + m_Name;
+        m_Event = FindFirstChangeNotification(Directory, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+        if (m_Event == INVALID_HANDLE_VALUE)
+            m_Event = NULL;
+    }
+    bool Start()
+    {
+        if (!m_Event)
+            return false;
+        if (!QueryFileTime(m_FullName, m_WriteTime))
+        {
+            Log("%s: Can't get write time of %S", __FUNCTION__, m_Name.GetString());
+        }
+        if (!RegisterWaitForSingleObject(&m_Wait, m_Event, _Callback, this, INFINITE, 0))
+        {
+            Log("%s: Can't register wait", __FUNCTION__);
+        }
+        return m_Wait != NULL;
+    }
+    ~CFileWatcher()
+    {
+        m_Finish = true;
+        if (m_Wait && !UnregisterWait(m_Wait))
+        {
+            ULONG n = 0;
+            // need to wait until it completes
+            while (m_Finish && n < 10)
+            {
+                Log("%s: waiting for completion", __FUNCTION__);
+                Sleep(100);
+                ++n;
+            }
+        }
+        if (m_Event)
+        {
+            FindCloseChangeNotification(m_Event);
+        }
+    }
+    bool IsChangeFound() { return m_FoundChange; }
+    static bool QueryFileTime(const CString& FullName, FILETIME& Time)
+    {
+        WIN32_FIND_DATA fd = {};
+        SYSTEMTIME st;
+        HANDLE h = FindFirstFile(FullName, &fd);
+        if (h == INVALID_HANDLE_VALUE)
+            return false;
+        Time = fd.ftLastWriteTime;
+        FileTimeToSystemTime(&Time, &st);
+        CStringA sSystemTime;
+        sSystemTime.Format("%02d.%02d.%d T%02d:%02d:%02d.%03d",
+            st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+        Log("%S: %s", FullName.GetString(), sSystemTime.GetString());
+        FindClose(h);
+        return true;
+    }
+protected:
+    CEvent& m_Signal;
+    CString m_Name;
+    CString m_Dir;
+    CString m_FullName;
+    HANDLE m_Event = NULL;
+    HANDLE m_Wait = NULL;
+    bool m_FoundChange = false;
+    bool m_Finish = false;
+    FILETIME m_WriteTime = {};
+    LONG m_RefCountCallbacks = 0;
+    virtual void Callback()
+    {
+        FILETIME ft;
+        if (m_FoundChange)
+        {
+            if (m_Finish)
+            {
+                m_Finish = false;
+            }
+            return;
+        }
+        // during updates of system directory we get multiple callbacks
+        // from different threads in thread pool, we do not need
+        // to process all the intermediate updates, also the timestamp of the
+        // file is set to the timestamp of original file at the end of the
+        // copy operation
+        CRefCountProtect protect(m_RefCountCallbacks);
+        if (protect.Compare(1))
+        {
+            Sleep(200);
+        }
+        else
+        {
+            return;
+        }
+        if (QueryFileTime(m_FullName, ft))
+        {
+            bool diff = ft.dwLowDateTime != m_WriteTime.dwLowDateTime ||
+                ft.dwHighDateTime != m_WriteTime.dwHighDateTime;
+            if (diff)
+            {
+                Log("%s: difference found", __FUNCTION__);
+                m_FoundChange = true;
+                m_Signal.Set();
+                return;
+            }
+            else
+            {
+                Log("%s: no difference found", __FUNCTION__);
+            }
+        }
+        if (!FindNextChangeNotification(m_Event))
+        {
+            Log("%s: con't respawn the notification ", __FUNCTION__);
+        }
+    }
+private:
+    static VOID NTAPI _Callback(PVOID Param, BOOLEAN)
+    {
+        ((CFileWatcher*)Param)->Callback();
+    }
+};
+
 static bool CopySelf()
 {
     CSystemDirectory s;
