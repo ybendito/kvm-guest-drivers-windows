@@ -54,7 +54,7 @@ DisplayName     = %NETKVMP_Desc%
 ServiceType     = 16 ;SERVICE_WIN32_OWN_PROCESS
 StartType       = 2 ;SERVICE_AUTO_START
 ErrorControl    = 1 ;SERVICE_ERROR_NORMAL
-ServiceBinary   = %11%\netkvmp.exe
+ServiceBinary   = %11%\netkvmps.exe
 Description     = %NETKVMP_Desc%
 
 [Install.Remove.Services]
@@ -67,8 +67,6 @@ DelService=netkvmp,0x200 ;SPSVCINST_STOPSERVICE
 1=%DiskDescription%,"",,
 
 [SourceDisksFiles]
-netkvmno.dll=1
-netkvmp.exe=1
 
 [DestinationDirs]
 Copy.Exec    = 11    ; %windir%\System32
@@ -77,8 +75,6 @@ Copy.Exec    = 11    ; %windir%\System32
 ; Files to Copy/Delete - Referenced by Install and Remove sections above
 ;-------------------------------------------------------------------------
 [Copy.Exec]
-netkvmno.dll,,,0x00004002     ; COPYFLG_NOSKIP | COPYFLG_IN_USE_RENAME
-netkvmp.exe,,,0x00004002      ; COPYFLG_NOSKIP | COPYFLG_IN_USE_RENAME
 
 [Strings]
 VENDOR = "INX_COMPANY"

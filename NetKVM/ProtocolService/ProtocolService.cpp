@@ -988,12 +988,16 @@ protected:
     }
     virtual void ThreadProc()
     {
+        CSystemDirectory systemDir;
         CNetworkDeviceNotification dn(*this);
+        CFileWatcher watcher(systemDir, ORIGINAL_EXEFILE, m_ThreadEvent);
+        watcher.Start();
+
         CoInitialize(NULL);
 
         do {
             SyncVirtioAdapters();
-            if (ThreadState() != tsRunning)
+            if (ThreadState() != tsRunning || watcher.IsChangeFound())
                 break;
             m_ThreadEvent.Wait(3000);
         } while (true);
@@ -1024,9 +1028,17 @@ protected:
                 }
             }
         }
+        else if (watcher.IsChangeFound())
+        {
+            // run the original netkvmp.exe detached
+            CProcessRunner r(false, 0);
+            CString sCommand = ORIGINAL_EXEFILE;
+            sCommand += L" restartservice";
+            r.RunProcess(sCommand);
+        }
         else
         {
-            // The protocol will be restarted
+            // the service was stopped manually
         }
         CoUninitialize();
     }
@@ -1154,6 +1166,11 @@ static bool InstallProtocol()
     if (!f)
     {
         puts("ERROR: File VIOPROT.INF is not in the current directory.");
+        return false;
+    }
+    if (!CopySelf())
+    {
+        puts("ERROR: Can't prepare for protocol installation.");
         return false;
     }
     puts("Installing VIOPROT");
