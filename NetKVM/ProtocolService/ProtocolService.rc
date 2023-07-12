@@ -1,9 +1,13 @@
 #include <windows.h>
 #include <ntverp.h>
+#include "resource.h"
 
 //_NT_TARGET_MAJ is defined only if 'Configuration' looks like 'Win10 Release'
 #undef _NT_TARGET_MAJ
 #define _NT_TARGET_MAJ 61
+
+ID_INF           RCDATA                   "vioprot.inf"
+ID_CAT           RCDATA                   "vioprot.cat"
 
 #include "..\..\Tools\vendor.ver"
 #undef __BUILDMACHINE__
