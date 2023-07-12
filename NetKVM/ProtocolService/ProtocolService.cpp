@@ -42,6 +42,9 @@
     - enable all other protocols on VF when the netkvm is disabled
 */
 
+#define SERVICE_EXEFILE  L"netkvmps.exe"
+#define ORIGINAL_EXEFILE L"netkvmp.exe"
+
 class CNetCfg
 {
 public:
@@ -777,6 +780,47 @@ public:
     }
 };
 
+class CSystemDirectory : public CString
+{
+public:
+    CSystemDirectory()
+    {
+        WCHAR* p = new WCHAR[MAX_PATH];
+        if (p)
+        {
+            if (GetSystemDirectory(p, MAX_PATH))
+            {
+                Append(p);
+                Append(L"\\");
+            }
+            delete[] p;
+        }
+    }
+};
+
+static bool CopySelf()
+{
+    CSystemDirectory s;
+    s += SERVICE_EXEFILE;
+    bool done;
+    int  retries = 0;
+    do
+    {
+        done = CopyFile(CServiceImplementation::BinaryPath(), s, false);
+        if (!done)
+        {
+            Log("%s: error %d", __FUNCTION__, GetLastError());
+            retries++;
+            Sleep(1000);
+        }
+        else
+        {
+            Log("%s: done", __FUNCTION__);
+        }
+    } while (!done && retries < 5);
+    return done;
+}
+
 class CProtocolServiceImplementation :
     public CServiceImplementation,
     public CThreadOwner,
@@ -1002,6 +1046,23 @@ int __cdecl main(int argc, char **argv)
     if (argc > 1)
     {
        s = argv[1];
+    }
+    if (!s.CompareNoCase("restartservice"))
+    {
+        // will run in session 0, but it is not a service
+        CService service(DummyService.ServiceName());
+        ULONG state = SERVICE_RUNNING;
+        for (UINT i = 0; i < 5; ++i)
+        {
+            if (!service.Query(state) && state == SERVICE_STOPPED)
+            {
+                CopySelf();
+                service.Start();
+                break;
+            }
+            Sleep(1000);
+        }
+        return 0;
     }
     if (CServiceImplementation::CheckInMain())
     {
