@@ -17,12 +17,15 @@ CatalogFile  = vioprot.cat
 
 
 [Manufacturer]
-%VENDOR%=Standard,NTx86,NTamd64
+%VENDOR%=Standard,NTx86,NTamd64,NTARM64
 
 [Standard.NTx86]
 %NETKVMP_Desc%=Install,VIOPROT
 
 [Standard.NTamd64]
+%NETKVMP_Desc%=Install,VIOPROT
+
+[Standard.NTARM64]
 %NETKVMP_Desc%=Install,VIOPROT
 
 ;-------------------------------------------------------------------------
