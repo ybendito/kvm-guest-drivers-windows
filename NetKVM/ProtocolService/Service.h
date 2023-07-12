@@ -569,3 +569,19 @@ protected:
         pOwner->ThreadTerminated((tThreadState)val);
     }
 };
+
+class CRefCountProtect
+{
+public:
+    CRefCountProtect(LONG& Value) : m_RefCount(Value)
+    {
+        InterlockedIncrement(&m_RefCount);
+    }
+    bool Compare(LONG Value) const { return m_RefCount == Value; }
+    ~CRefCountProtect()
+    {
+        InterlockedDecrement(&m_RefCount);
+    }
+private:
+    LONG& m_RefCount;
+};
