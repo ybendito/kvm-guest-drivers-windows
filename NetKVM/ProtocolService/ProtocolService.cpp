@@ -28,6 +28,7 @@
  */
 
 #include "stdafx.h"
+#include "resource.h"
 
 /*
     The protocol service replaces and extends the notification object.
@@ -742,6 +743,48 @@ public:
     }
 };
 
+class CResourceFile
+{
+public:
+    CResourceFile(UINT Id, LPCWSTR name) : m_Name(name)
+    {
+        m_Resource = FindResource(NULL, MAKEINTRESOURCE(Id), RT_RCDATA);
+        Log("%s: %S %p", __FUNCTION__, name, m_Resource);
+    }
+    bool Flush()
+    {
+        if (!m_Resource)
+            return false;
+        HGLOBAL hg = LoadResource(NULL, m_Resource);
+        if (!hg)
+            return false;
+        ULONG done = 0, size = SizeofResource(NULL, m_Resource);
+        if (!size)
+            return false;
+        PVOID p = LockResource(hg);
+        if (!p)
+            return false;
+        ULONG access = GENERIC_READ | GENERIC_WRITE;
+        HANDLE h = CreateFile(m_Name, access, 0, NULL, CREATE_ALWAYS, 0, NULL);
+        if (h == INVALID_HANDLE_VALUE)
+            return false;
+        // we created the file and will delete it
+        m_Delete = true;
+        bool res = WriteFile(h, p, size, &done, NULL);
+        CloseHandle(h);
+        return res;
+    }
+    ~CResourceFile()
+    {
+        if (m_Delete)
+            DeleteFile(m_Name);
+    }
+private:
+    CString m_Name;
+    HRSRC   m_Resource;
+    bool    m_Delete = false;
+};
+
 class CFileFinder
 {
 public:
@@ -1157,6 +1200,8 @@ static void UninstallProtocol()
 
 static bool InstallProtocol()
 {
+    CResourceFile inf(ID_INF, L"vioprot.inf");
+    CResourceFile cat(ID_CAT, L"vioprot.cat");
     FILE* f = NULL;
     fopen_s(&f, "vioprot.inf", "r");
     if (f)
@@ -1165,8 +1210,11 @@ static bool InstallProtocol()
     }
     if (!f)
     {
-        puts("ERROR: File VIOPROT.INF is not in the current directory.");
-        return false;
+        puts("File VIOPROT.INF is not in the current directory.");
+        if (!inf.Flush() || !cat.Flush())
+        {
+            return false;
+        }
     }
     if (!CopySelf())
     {
