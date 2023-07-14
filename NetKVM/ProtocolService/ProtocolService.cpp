@@ -1051,8 +1051,6 @@ protected:
             for (UINT i = 0; i < m_Adapters.GetCount(); ++i)
             {
                 CVirtioAdapter& a = m_Adapters[i];
-                if (a.m_VfIndex == INFINITE)
-                    continue;
                 switch (a.m_State)
                 {
                     case asBoundInactive:
